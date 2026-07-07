@@ -1,0 +1,125 @@
+#2: (12.76%)
+PHYLUM BACTERIODOTA
+
+Aquirufa -> genus
+Aricella -> genus
+^^
+Same Family --> Flectobacillaceae --> hella niche
+Bacteriodota --> Phylum
+Flexibacteraceae --> Family
+
+
+all at 99.75% 
+
+#3: (12.25%)
+PHYLUM PSEUDOMONADOTA
+
+Psuedomonadota -> Phylum
+alpha proteobacterium ->class
+Pelagibacterales -> Order 
+Candidatus Plegaibacterium -> Genus
+all at 100%
+
+#4: (11.97%)
+PHYLUM BACTERIODOTA
+
+Aquirufa -> Genus
+Aricella -> genus
+Bacteriodota --> Phylum
+Cytophagaceae --> Family
+Flexibacteraceae - Family
+all at 100%
+
+#5: (9.56%)
+PHYLUM PSEUDOMONADOTA
+
+Alphaproteobacteria
+Erythrobacter
+Erythomicrobium
+Prophyrobacter
+all at 100%
+
+#6: (8.15%)
+PHYLUM ACTINOMYCETOTA *
+-no confident match, highest hits wre 90-92%(Yinghuangia, Embleya, Terracoccus) so unresolved at the genus level
+-> all three genera (Yinghuangia, Embleya, Terracoccus) are Actinomycetota, so phylum call is consistent even though genus is not
+#7: (7.22%)
+PHYLUM BACTERIODOTA
+- Flavobacterium 100%
+-> Flavobacterium -> Bacteriodota
+#8: (5.86%)
+PHYLUM CYANOBACTERIOTA *
+- no confident match were 87-85%(Neochroococus, Eurychoronema, Dulcicalothrix)
+-> all three genera (Neochroococcus, Eurychoronema, Dulcicalothrix) are Cyanobacteriota, so phylum call is consistent even though genus is not
+#9: (4.69%)
+PHYLUM ACTINOMYCETOTA *
+not confident were 92.04-90%
+-Ilumatobacter
+-Desertimonas      *-> in the same phylum (Actinomycetota)*
+-Actinomarinicola
+-> Ilumatobacter, Desertimonas, and Actinomarinicola are all Actinomycetota
+#10: (3.15%)
+PHYLUM BACTERIODOTA
+- Flavobacterium
+96.77%
+-> Flavobacterium -> Bacteriodota
+
+#11: (3.07%)
+PHYLUM BACTERIODOTA
+- Flavobacteriaceae(100%)
+- Bacteroidetes(100%)
+- uncolutured bacterium clone(100%)
+98.26%-100%
+#12: (2.60%)
+PHYLUM UNRESOLVED *
+- uncultured bacterium clone(100%)
+- Asterionella formosa chloroplast(100%)
+- uncultured diatom clone(100%)
+- uncultured ralfsii clone(100%)
+98.5%-100%
+#13: (2.34%)
+PHYLUM PSEUDOMONADOTA *
+- uncultured bacterium(100%)
+- uncultured prokaryote(100%)
+- Comamonadaceae(100%)
+- Limnohabitans(100%)
+99.75%-100%
+#14: (2.24%)
+PHYLUM UNRESOLVED *
+- cynobacterium(100%)
+- bacterium(100%)
+- phototrophic eukaryote(100%)
+99%-100%
+#15: (2.17%)
+PHYLUM UNRESOLVED *
+- uncultured bacterium clone(100%)
+97.51%-100%
+#16: (2.16%)
+PHYLUM PSEUDOMONADOTA *
+- Bacteroidetes bacterium(99.75%)
+99.5%-99.75%
+#17: (2.16%)
+PHYLUM ACTINOMYCETOTA *
+- Corynebacterium (89.19%)
+-> Corynebacterium -> Actinomycetota
+
+#18: (2.02%)
+PHYLUM PSEUDOMONADOTA
+- Limnohabitans
+-> Limnohabitans -> Pseudomonadota (Betaproteobacteria)
+
+#19: (1.95%)
+PHYLUM ACTINOMYCETOTA
+- Rhodoluna
+-> Rhodoluna -> Actinomycetota (Microbacteriaceae)
+
+#20: (1.85%)
+PHYLUM BACTERIODOTA
+- Flavobacterium
+-> Flavobacterium -> Bacteriodota
+
+#21: (1.82%)
+PHYLUM PSEUDOMONADOTA
+- Limnohabitans
+-> Limnohabitans -> Pseudomonadota (Betaproteobacteria)
+

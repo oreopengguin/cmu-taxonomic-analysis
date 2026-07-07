@@ -1,0 +1,613 @@
+<title>Phylum composition by season — House4 Rivers 2019</title>
+<style>
+  .viz-root {
+    --surface-1:      #f7f9f9;
+    --surface-2:      #eef2f2;
+    --text-primary:   #10171a;
+    --text-secondary: #4d5a5c;
+    --text-muted:     #7c8a8c;
+    --gridline:       #dde4e4;
+    --baseline:       #b7c1c1;
+    --border:         rgba(16,23,26,0.10);
+    --accent:         #0f7d6c;
+
+    --series-pseudomonadota:     #2a78d6;
+    --series-pseudomonadota-low: #6da7ec;
+    --series-bacteriodota:       #1baf7a;
+    --series-actinomycetota:     #eda100;
+    --series-actinomycetota-low: #f3c259;
+    --series-cyanobacteriota:    #008300;
+    --series-unresolved:         #4a3aa7;
+  }
+  @media (prefers-color-scheme: dark) {
+    .viz-root {
+      --surface-1:      #12181a;
+      --surface-2:      #1a2224;
+      --text-primary:   #f2f5f5;
+      --text-secondary: #b9c4c5;
+      --text-muted:     #83908f;
+      --gridline:       #2a3436;
+      --baseline:       #3a4547;
+      --border:         rgba(255,255,255,0.10);
+      --accent:         #3fcab3;
+
+      --series-pseudomonadota:     #3987e5;
+      --series-pseudomonadota-low: #8fbdf0;
+      --series-bacteriodota:       #199e70;
+      --series-actinomycetota:     #c98500;
+      --series-actinomycetota-low: #d9aa4d;
+      --series-cyanobacteriota:    #1c9e1c;
+      --series-unresolved:         #9085e9;
+    }
+  }
+  :root[data-theme="dark"] .viz-root {
+    --surface-1:      #12181a;
+    --surface-2:      #1a2224;
+    --text-primary:   #f2f5f5;
+    --text-secondary: #b9c4c5;
+    --text-muted:     #83908f;
+    --gridline:       #2a3436;
+    --baseline:       #3a4547;
+    --border:         rgba(255,255,255,0.10);
+    --accent:         #3fcab3;
+
+    --series-pseudomonadota:     #3987e5;
+    --series-pseudomonadota-low: #8fbdf0;
+    --series-bacteriodota:       #199e70;
+    --series-actinomycetota:     #c98500;
+    --series-actinomycetota-low: #d9aa4d;
+    --series-cyanobacteriota:    #1c9e1c;
+    --series-unresolved:         #9085e9;
+  }
+  :root[data-theme="light"] .viz-root {
+    --surface-1:      #f7f9f9;
+    --surface-2:      #eef2f2;
+    --text-primary:   #10171a;
+    --text-secondary: #4d5a5c;
+    --text-muted:     #7c8a8c;
+    --gridline:       #dde4e4;
+    --baseline:       #b7c1c1;
+    --border:         rgba(16,23,26,0.10);
+    --accent:         #0f7d6c;
+
+    --series-pseudomonadota:     #2a78d6;
+    --series-pseudomonadota-low: #6da7ec;
+    --series-bacteriodota:       #1baf7a;
+    --series-actinomycetota:     #eda100;
+    --series-actinomycetota-low: #f3c259;
+    --series-cyanobacteriota:    #008300;
+    --series-unresolved:         #4a3aa7;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .viz-root {
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--surface-1);
+    color: var(--text-primary);
+    padding: 40px 24px 56px;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; }
+
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 10px;
+  }
+  h1 {
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    margin: 0 0 8px;
+    text-wrap: balance;
+    color: var(--text-primary);
+  }
+  .dek {
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--text-secondary);
+    max-width: 62ch;
+    margin: 0 0 32px;
+  }
+
+  .chart-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 28px 28px 20px;
+  }
+
+  .chart-frame {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    column-gap: 8px;
+  }
+  .y-axis {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 320px;
+    text-align: right;
+    padding-bottom: 28px;
+  }
+  .y-axis span {
+    font-size: 11px;
+    color: var(--text-muted);
+    transform: translateY(50%);
+    font-variant-numeric: tabular-nums;
+  }
+  .y-axis span:first-child { transform: translateY(0); }
+  .y-axis span:last-child { transform: translateY(100%); }
+
+  .plot {
+    position: relative;
+    height: 320px;
+    border-bottom: 1px solid var(--baseline);
+  }
+  .gridline {
+    position: absolute;
+    left: 0; right: 0;
+    height: 1px;
+    background: var(--gridline);
+  }
+
+  .bars {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: flex-end;
+    padding: 0 12px;
+  }
+  .bar-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 108px;
+  }
+  .stack {
+    width: 64px;
+    height: 320px;
+    display: flex;
+    flex-direction: column-reverse;
+    border-radius: 4px 4px 3px 3px;
+    overflow: hidden;
+  }
+  .seg {
+    width: 100%;
+    position: relative;
+    cursor: pointer;
+    outline: none;
+    transition: filter 120ms ease;
+    border-top: 2px solid var(--surface-2);
+  }
+  .stack .seg:last-child { border-top: none; }
+  .seg:hover, .seg:focus-visible {
+    filter: brightness(1.12);
+  }
+  .seg:focus-visible {
+    box-shadow: inset 0 0 0 2px var(--surface-1);
+  }
+  .seg .inline-label {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: #fff;
+    pointer-events: none;
+    text-shadow: 0 1px 1px rgba(0,0,0,0.25);
+  }
+  .seg[data-fill="light"] .inline-label { color: #10171a; text-shadow: none; }
+  .seg.low, .swatch.low {
+    background-image: repeating-linear-gradient(
+      135deg,
+      rgba(255,255,255,0.4) 0px, rgba(255,255,255,0.4) 3px,
+      rgba(255,255,255,0) 3px, rgba(255,255,255,0) 7px
+    );
+  }
+
+  .season-label {
+    margin-top: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .season-total {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* legend */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-primary);
+  }
+  .swatch {
+    width: 13px;
+    height: 13px;
+    border-radius: 3px;
+    flex: none;
+  }
+  .legend-item .star {
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+
+  .footnote {
+    margin-top: 18px;
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    max-width: 68ch;
+  }
+  .footnote strong { color: var(--text-secondary); }
+
+  /* tooltip */
+  #tooltip {
+    position: fixed;
+    pointer-events: none;
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 11px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    opacity: 0;
+    transition: opacity 100ms ease;
+    z-index: 10;
+    max-width: 220px;
+  }
+  #tooltip.show { opacity: 1; }
+  #tooltip .tt-value {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-primary);
+  }
+  #tooltip .tt-series { color: var(--text-secondary); }
+  #tooltip .tt-key {
+    display: inline-block;
+    width: 9px; height: 9px;
+    border-radius: 2px;
+    margin-right: 6px;
+  }
+
+  /* table view */
+  details.table-toggle {
+    margin-top: 22px;
+  }
+  details.table-toggle > summary {
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    list-style: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  details.table-toggle > summary::-webkit-details-marker { display: none; }
+  details.table-toggle > summary::before {
+    content: "▸";
+    font-size: 10px;
+    transition: transform 120ms ease;
+  }
+  details.table-toggle[open] > summary::before {
+    transform: rotate(90deg);
+  }
+  .table-scroll {
+    overflow-x: auto;
+    margin-top: 14px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 13px;
+    min-width: 560px;
+  }
+  th, td {
+    text-align: right;
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--border);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  th:first-child, td:first-child { text-align: left; font-variant-numeric: normal; }
+  thead th {
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  tbody td { color: var(--text-secondary); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr.total-row td { color: var(--text-primary); font-weight: 600; }
+</style>
+
+<div class="viz-root">
+  <div class="wrap">
+    <p class="eyebrow">House4 Rivers · Seasonal 2019 · Top-20 OTUs</p>
+    <h1>Phylum-level community composition shifts by season</h1>
+    <p class="dek">
+      Relative abundance of each phylum among the 20 most-abundant OTUs, computed from
+      season-specific read counts in <code>top20_otu_table.tsv</code>. Each bar sums the
+      season's top-20 reads to 100%. Phyla with mixed-confidence evidence are split into
+      a solid (high-identity) and hatched (low-identity) sub-segment.
+    </p>
+
+    <div class="chart-card">
+      <div class="chart-frame">
+        <div class="y-axis">
+          <span>100%</span><span>75%</span><span>50%</span><span>25%</span><span>0%</span>
+        </div>
+        <div class="plot" id="plot">
+          <div class="gridline" style="bottom:75%"></div>
+          <div class="gridline" style="bottom:50%"></div>
+          <div class="gridline" style="bottom:25%"></div>
+          <div class="bars" id="bars"></div>
+        </div>
+      </div>
+      <div class="chart-frame">
+        <div></div>
+        <div class="bars" id="labels"></div>
+      </div>
+
+      <div class="legend" id="legend"></div>
+
+      <p class="footnote">
+        <strong>Hatched, *</strong> segments are reads from OTUs whose closest BLAST
+        reference match was below ~90% percent identity, so the phylum assignment for
+        that share of reads is less certain than a high-identity (solid-fill) match.
+        <strong>Unresolved</strong> covers OTUs whose top hits were non-bacterial (plant
+        sequences) or uninformative ("uncultured bacterium"), so no phylum could be
+        assigned — see <code>bacteria-list.csv</code> for per-OTU detail.
+      </p>
+
+      <details class="table-toggle">
+        <summary>View underlying data table</summary>
+        <div class="table-scroll">
+          <table id="data-table"></table>
+        </div>
+      </details>
+    </div>
+  </div>
+</div>
+
+<div id="tooltip" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  // each series maps to a phylum's color (colorVar); "low" series additionally
+  // get the hatch texture and represent reads from sub-90%-identity OTUs only
+  var series = [
+    { key: "bacteriodota",        label: "Bacteriodota",              low: false, colorVar: "bacteriodota",        fillLight: false },
+    { key: "pseudomonadota_conf", label: "Pseudomonadota",             low: false, colorVar: "pseudomonadota",      fillLight: false },
+    { key: "pseudomonadota_low",  label: "Pseudomonadota (low % ID)",  low: true,  colorVar: "pseudomonadota-low",  fillLight: true  },
+    { key: "actinomycetota_conf",label: "Actinomycetota",              low: false, colorVar: "actinomycetota",      fillLight: true  },
+    { key: "actinomycetota_low", label: "Actinomycetota (low % ID)",  low: true,  colorVar: "actinomycetota-low",  fillLight: true  },
+    { key: "cyanobacteriota_low",label: "Cyanobacteriota (low % ID)", low: true,  colorVar: "cyanobacteriota",     fillLight: false },
+    { key: "unresolved_low",     label: "Unresolved (low % ID)",      low: true,  colorVar: "unresolved",          fillLight: false }
+  ];
+
+  // stacking order bottom -> top; confident tier sits directly under its own low-identity tier
+  var stackOrder = [
+    "bacteriodota",
+    "pseudomonadota_conf", "pseudomonadota_low",
+    "actinomycetota_conf", "actinomycetota_low",
+    "cyanobacteriota_low",
+    "unresolved_low"
+  ];
+
+  var seasons = [
+    { name: "Fall",   total: 31149,
+      values: { bacteriodota: 210,   pseudomonadota_conf: 21602, pseudomonadota_low: 109,  actinomycetota_conf: 92,   actinomycetota_low: 2860,  cyanobacteriota_low: 5892, unresolved_low: 384  } },
+    { name: "Winter", total: 60057,
+      values: { bacteriodota: 51796, pseudomonadota_conf: 1445,  pseudomonadota_low: 2953, actinomycetota_conf: 259,  actinomycetota_low: 1231,  cyanobacteriota_low: 0,    unresolved_low: 2373 } },
+    { name: "Spring", total: 66335,
+      values: { bacteriodota: 33888, pseudomonadota_conf: 4186,  pseudomonadota_low: 5439, actinomycetota_conf: 3344, actinomycetota_low: 10169, cyanobacteriota_low: 0,    unresolved_low: 9309 } },
+    { name: "Summer", total: 52311,
+      values: { bacteriodota: 7199,  pseudomonadota_conf: 9703,  pseudomonadota_low: 2012, actinomycetota_conf: 863,  actinomycetota_low: 20699, cyanobacteriota_low: 7495, unresolved_low: 4340 } }
+  ];
+
+  var seriesByKey = {};
+  series.forEach(function (s) { seriesByKey[s.key] = s; });
+
+  var barsEl = document.getElementById("bars");
+  var labelsEl = document.getElementById("labels");
+  var legendEl = document.getElementById("legend");
+  var tooltip = document.getElementById("tooltip");
+
+  seasons.forEach(function (season) {
+    var col = document.createElement("div");
+    col.className = "bar-col";
+
+    var stack = document.createElement("div");
+    stack.className = "stack";
+
+    stackOrder.forEach(function (key) {
+      var s = seriesByKey[key];
+      var reads = season.values[key];
+      var pct = season.total ? (reads / season.total * 100) : 0;
+      if (pct <= 0) return;
+      var seg = document.createElement("div");
+      seg.className = "seg" + (s.low ? " low" : "");
+      seg.style.height = pct + "%";
+      seg.style.background = "var(--series-" + s.colorVar + ")";
+      seg.tabIndex = 0;
+      if (s.fillLight) seg.setAttribute("data-fill", "light");
+      seg.setAttribute("data-season", season.name);
+      seg.setAttribute("data-key", key);
+      seg.setAttribute("data-pct", pct.toFixed(2));
+      seg.setAttribute("data-reads", reads);
+      if (pct >= 14) {
+        var lbl = document.createElement("span");
+        lbl.className = "inline-label";
+        lbl.textContent = pct.toFixed(1) + "%";
+        seg.appendChild(lbl);
+      }
+      stack.appendChild(seg);
+    });
+
+    col.appendChild(stack);
+    barsEl.appendChild(col);
+
+    var labelCol = document.createElement("div");
+    labelCol.className = "bar-col";
+
+    var seasonLabel = document.createElement("div");
+    seasonLabel.className = "season-label";
+    seasonLabel.textContent = season.name;
+    labelCol.appendChild(seasonLabel);
+
+    var seasonTotal = document.createElement("div");
+    seasonTotal.className = "season-total";
+    seasonTotal.textContent = season.total.toLocaleString() + " reads";
+    labelCol.appendChild(seasonTotal);
+
+    labelsEl.appendChild(labelCol);
+  });
+
+  // tooltip behavior — mark is the hit target
+  function showTooltip(e, seg) {
+    var key = seg.getAttribute("data-key");
+    var s = seriesByKey[key];
+    var pct = seg.getAttribute("data-pct");
+    var reads = Number(seg.getAttribute("data-reads")).toLocaleString();
+    var season = seg.getAttribute("data-season");
+    tooltip.innerHTML = "";
+
+    var row1 = document.createElement("div");
+    var keyDot = document.createElement("span");
+    keyDot.className = "tt-key";
+    keyDot.style.background = "var(--series-" + s.colorVar + ")";
+    var seriesName = document.createElement("span");
+    seriesName.className = "tt-series";
+    seriesName.textContent = s.label + (s.low ? " *" : "");
+    row1.appendChild(keyDot);
+    row1.appendChild(seriesName);
+
+    var row2 = document.createElement("div");
+    var valueSpan = document.createElement("span");
+    valueSpan.className = "tt-value";
+    valueSpan.textContent = pct + "%";
+    var restSpan = document.createElement("span");
+    restSpan.className = "tt-series";
+    restSpan.textContent = " of " + season + " (" + reads + " reads)";
+    row2.appendChild(valueSpan);
+    row2.appendChild(restSpan);
+
+    tooltip.appendChild(row1);
+    tooltip.appendChild(row2);
+    tooltip.classList.add("show");
+    positionTooltip(e);
+  }
+  function positionTooltip(e) {
+    var x = (e.clientX !== undefined ? e.clientX : (e.target.getBoundingClientRect().left + 10));
+    var y = (e.clientY !== undefined ? e.clientY : (e.target.getBoundingClientRect().top));
+    var pad = 14;
+    tooltip.style.left = Math.min(x + pad, window.innerWidth - 236) + "px";
+    tooltip.style.top = Math.max(y - 50, 10) + "px";
+  }
+  function hideTooltip() {
+    tooltip.classList.remove("show");
+  }
+
+  barsEl.addEventListener("pointermove", function (e) {
+    var seg = e.target.closest && e.target.closest(".seg");
+    if (seg) showTooltip(e, seg);
+  });
+  barsEl.addEventListener("pointerleave", hideTooltip);
+
+  Array.prototype.forEach.call(barsEl.querySelectorAll(".seg"), function (seg) {
+    seg.addEventListener("focus", function (e) { showTooltip(e, seg); });
+    seg.addEventListener("blur", hideTooltip);
+  });
+
+  // legend — swatch mirrors the mark, including the hatch texture on low-identity tiers
+  series.forEach(function (s) {
+    var item = document.createElement("div");
+    item.className = "legend-item";
+    var sw = document.createElement("span");
+    sw.className = "swatch" + (s.low ? " low" : "");
+    sw.style.background = "var(--series-" + s.colorVar + ")";
+    var txt = document.createElement("span");
+    txt.textContent = s.label;
+    item.appendChild(sw);
+    item.appendChild(txt);
+    if (s.low) {
+      var star = document.createElement("span");
+      star.className = "star";
+      star.textContent = "*";
+      item.appendChild(star);
+    }
+    legendEl.appendChild(item);
+  });
+
+  // data table
+  var table = document.getElementById("data-table");
+  var thead = document.createElement("thead");
+  var headRow = document.createElement("tr");
+  var thPhylum = document.createElement("th");
+  thPhylum.textContent = "Phylum";
+  headRow.appendChild(thPhylum);
+  seasons.forEach(function (season) {
+    var th = document.createElement("th");
+    th.textContent = season.name;
+    headRow.appendChild(th);
+  });
+  thead.appendChild(headRow);
+  table.appendChild(thead);
+
+  var tbody = document.createElement("tbody");
+  series.forEach(function (s) {
+    var tr = document.createElement("tr");
+    var tdName = document.createElement("td");
+    tdName.textContent = s.label + (s.low ? " *" : "");
+    tdName.style.paddingLeft = s.low ? "22px" : "10px";
+    tr.appendChild(tdName);
+    seasons.forEach(function (season) {
+      var reads = season.values[s.key];
+      var pct = season.total ? (reads / season.total * 100) : 0;
+      var td = document.createElement("td");
+      td.textContent = pct.toFixed(2) + "% (" + reads.toLocaleString() + ")";
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+  var totalRow = document.createElement("tr");
+  totalRow.className = "total-row";
+  var tdTotalLabel = document.createElement("td");
+  tdTotalLabel.textContent = "Total reads";
+  totalRow.appendChild(tdTotalLabel);
+  seasons.forEach(function (season) {
+    var td = document.createElement("td");
+    td.textContent = season.total.toLocaleString();
+    totalRow.appendChild(td);
+  });
+  tbody.appendChild(totalRow);
+  table.appendChild(tbody);
+})();
+</script>
